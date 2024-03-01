@@ -1,0 +1,33 @@
+@import "../../styles/variables";
+@import "../../styles/extends";
+@import "../../styles/mixin";
+
+.header-container {
+  @extend %flex;
+
+  background-color: $navyBlue;
+  padding: 0.2rem 1rem;
+  height: 55px;
+
+  .header-left {
+    @extend %flex-center;
+    width: 50%;
+    gap: 16px;
+    color: wheat;
+    cursor: pointer;
+  }
+
+  .header-right {
+    display: flex;
+    text-align: center;
+    justify-content: end;
+    width: 50%;
+    gap: 20px;
+    color: white;
+  }
+
+  button {
+    @extend %btn;
+  }
+
+}
