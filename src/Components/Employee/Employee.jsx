@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { Component } from "react";
 import { connect } from "react-redux";
@@ -5,6 +6,7 @@ import "./Employee.scss";
 import { addUserDetails } from "../Reducer/LoginReducer";
 import DisplayUserList from "./DisplayUserList";
 import { v4 as uuidv4 } from "uuid";
+import * as Yup from "yup";
 
 export class Employee extends Component {
   initialValue = {
@@ -19,6 +21,23 @@ export class Employee extends Component {
 
   countries = ["India", "Australia", "Mexico", "Canada", "Spain"];
 
+  validationSchema = Yup.object().shape({
+    firstName: Yup.string()
+      .required("First Name required")
+      .min(3, "First Name must be at least 3 characters"),
+    middleName: Yup.string().required("Middle Name required"),
+    lastName: Yup.string().required("Last Name required"),
+    email: Yup.string().email("Invalid Email").required("Email required"),
+    phoneNumber: Yup.string()
+      .matches(/^[0-9]{10}$/, "Invalid phone number")
+      .required("Phone number is required"),
+    country: Yup.string().required("Country required"),
+    address: Yup.string()
+      .required("Address is required")
+      .min(5, "Address is too short")
+      .max(100, "Address is too long"),
+  });
+
   render() {
     let { user } = this.props;
 
@@ -28,7 +47,7 @@ export class Employee extends Component {
 
         <Formik
           initialValues={this.initialValue}
-          // validationSchema={validationSchema}
+          validationSchema={this.validationSchema}
           onSubmit={(values, { resetForm }) => {
             console.log(values);
             const uniqueId = uuidv4();
@@ -41,7 +60,7 @@ export class Employee extends Component {
             <Form className="container">
               <div className="input-container">
                 <label>First Name </label>
-                <div>
+                <div style={{ display: "flex" }}>
                   <Field
                     type="text"
                     name="firstName"
@@ -122,7 +141,7 @@ export class Employee extends Component {
 
               <div className="input-container">
                 <label>Country</label>
-                <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex" }}>
                   <Field as="select" name="country">
                     <option
                       value=""
@@ -135,7 +154,7 @@ export class Employee extends Component {
                   </Field>
                   <ErrorMessage
                     name="country"
-                    component="div"
+                    component="span"
                     className="error"
                   />
                 </div>
@@ -147,7 +166,7 @@ export class Employee extends Component {
                   <Field
                     as="textarea"
                     name="address"
-                    placeholder="Enter your Address"
+                    placeholder="Enter your Address..."
                   />
                   <ErrorMessage
                     name="address"
@@ -157,12 +176,25 @@ export class Employee extends Component {
                 </div>
               </div>
 
-              <button type="submit">Submit</button>
+              <div>
+                <button className="btn-submit" type="submit">
+                  Submit
+                </button>
 
-              <DisplayUserList />
+                <button
+                  className="btn-reset"
+                  type="button"
+                  onClick={() => {
+                    formikProps.resetForm();
+                  }}
+                >
+                  RESET
+                </button>
+              </div>
             </Form>
           )}
         </Formik>
+        <DisplayUserList />
       </div>
     );
   }

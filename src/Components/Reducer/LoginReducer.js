@@ -38,7 +38,7 @@ const LoginReducer = createSlice({
     },
     deleteUserDetails: (state, action) => {
       let { id } = action.payload;
-console.log(state.userDetails, "all details");
+      console.log(state.userDetails, "all details");
       let updatedList = state.userDetails.filter((e) => e.id != id);
       state.userDetails = updatedList;
     },

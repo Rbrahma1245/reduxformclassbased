@@ -1,9 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 import { Component } from "react";
 import { isObjectEmpty } from "../../Utils/ObjectUtils";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
 import { connect } from "react-redux";
 import { deleteUserDetails } from "../Reducer/LoginReducer";
+
 
 class DisplayUserList extends Component {
   columns = [
