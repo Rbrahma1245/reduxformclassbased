@@ -6,8 +6,10 @@ import "react-table-v6/react-table.css";
 import { connect } from "react-redux";
 import { deleteUserDetails } from "../Reducer/LoginReducer";
 
-
 class DisplayUserList extends Component {
+  constructor() {
+    super();
+  }
   columns = [
     {
       Header: "First Name",
@@ -39,6 +41,12 @@ class DisplayUserList extends Component {
     },
     {
       Header: "Actions",
+
+      filterable: true,
+      ReactTable: true,
+      ReacTablePagination: true,
+      
+      
       Cell: ({ row }) => (
         <button onClick={() => this.handleDeleteClick(row)}>Delete</button>
       ),
@@ -46,7 +54,27 @@ class DisplayUserList extends Component {
   ];
 
   handleRowClick = (row) => {
-    console.log(row.original);
+    let {
+      firstName,
+      middleName,
+      lastName,
+      email,
+      phoneNumber,
+      country,
+      address,
+    } = row.original;
+
+    this.props.setStateCallback({
+      initialValue: {
+        firstName,
+        middleName,
+        lastName,
+        email,
+        phoneNumber,
+        country,
+        address,
+      },
+    });
   };
 
   handleDeleteClick = (row) => {
@@ -56,7 +84,6 @@ class DisplayUserList extends Component {
   render() {
     let { userDetails } = this.props;
 
-    console.log(userDetails, "all details");
     return (
       <div style={{ height: "50vh", textAlign: "center", marginTop: 50 }}>
         {isObjectEmpty(userDetails) ? (

@@ -9,15 +9,20 @@ import { v4 as uuidv4 } from "uuid";
 import * as Yup from "yup";
 
 export class Employee extends Component {
-  initialValue = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    country: "", // Add country to your initial values
-    address: "",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      initialValue: {
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        email: "",
+        phoneNumber: "",
+        country: "",
+        address: "",
+      },
+    };
+  }
 
   countries = ["India", "Australia", "Mexico", "Canada", "Spain"];
 
@@ -38,15 +43,35 @@ export class Employee extends Component {
       .max(100, "Address is too long"),
   });
 
+  // componentDidUpdate(prevProps, prevState) {
+  //   // Check if certain state has changed
+  //   if (this.state.initialValue !== prevState.initialValue) {
+  //     // Perform actions based on the state change
+  //     console.log("someState has changed:", this.state.initialValue);
+
+  //     // this.updateState(this.state.formValue);
+  //   }
+
+  //   // You can also perform actions without checking specific props or state
+  //   console.log("Component has been updated");
+  // }
+
+  updateState = (newValues) => {
+    this.setState({ initialValue: newValues });
+  };
+
   render() {
     let { user } = this.props;
+
+    // console.log(this.state.initialValue);
 
     return (
       <div>
         <h4>User Name: {user.userName}</h4>
 
         <Formik
-          initialValues={this.initialValue}
+          initialValues={this.state.initialValue}
+          enableReinitialize
           validationSchema={this.validationSchema}
           onSubmit={(values, { resetForm }) => {
             console.log(values);
@@ -58,12 +83,14 @@ export class Employee extends Component {
         >
           {(formikProps) => (
             <Form className="container">
+              {console.log(formikProps, "test formik")}
               <div className="input-container">
                 <label>First Name </label>
                 <div style={{ display: "flex" }}>
                   <Field
                     type="text"
                     name="firstName"
+                    // value={formikProps?.values?.initialValue?.firstName}
                     placeholder="Enter First Name"
                   />
                   <ErrorMessage
@@ -81,6 +108,7 @@ export class Employee extends Component {
                     type="text"
                     name="middleName"
                     placeholder="Enter Middle Name"
+                    // value={formikProps?.values?.initialValue?.middleName}
                   />
                   <ErrorMessage
                     name="middleName"
@@ -98,6 +126,7 @@ export class Employee extends Component {
                     type="text"
                     name="lastName"
                     placeholder="Enter Last Name"
+                    // value={formikProps?.values?.initialValue?.lastName}
                   />
                   <ErrorMessage
                     name="lastName"
@@ -114,6 +143,7 @@ export class Employee extends Component {
                     type="email"
                     name="email"
                     placeholder="Enter your Email"
+                    // value={formikProps?.values?.initialValue?.email}
                   />
                   <ErrorMessage
                     name="email"
@@ -130,6 +160,7 @@ export class Employee extends Component {
                     type="number"
                     name="phoneNumber"
                     placeholder="Enter your Phone number"
+                    // value={formikProps?.values?.initialValue?.phoneNumber}
                   />
                   <ErrorMessage
                     name="phoneNumber"
@@ -142,7 +173,11 @@ export class Employee extends Component {
               <div className="input-container">
                 <label>Country</label>
                 <div style={{ display: "flex" }}>
-                  <Field as="select" name="country">
+                  <Field
+                    as="select"
+                    name="country"
+                    // value={formikProps?.values?.initialValue?.country}
+                  >
                     <option
                       value=""
                       label="Select an option"
@@ -167,6 +202,8 @@ export class Employee extends Component {
                     as="textarea"
                     name="address"
                     placeholder="Enter your Address..."
+                    value={formikProps?.values?.initialValue?.address}
+                    onChange={formikProps.handleChange}
                   />
                   <ErrorMessage
                     name="address"
@@ -194,7 +231,7 @@ export class Employee extends Component {
             </Form>
           )}
         </Formik>
-        <DisplayUserList />
+        <DisplayUserList setStateCallback={this.updateState} />
       </div>
     );
   }
